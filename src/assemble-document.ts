@@ -1,7 +1,9 @@
 // OpenGenerativeUI Design System CSS and Bridge JS
 //
-// Forked from C:\Sandboxes\OpenGenUI\OpenGenerativeUI\apps\mcp\src\renderer.ts
-// (which is itself a fork of apps/app/src/components/generative-ui/widget-renderer.tsx).
+// Forked from CopilotKit/OpenGenerativeUI's apps/mcp/src/renderer.ts:
+//   https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/mcp/src/renderer.ts
+// (which is itself a fork of apps/app/src/components/generative-ui/widget-renderer.tsx
+// in the same repo).
 //
 // Differences vs. the source fork:
 //   - Adds <script type="importmap"> for three/gsap/d3/chart.js bare-specifier

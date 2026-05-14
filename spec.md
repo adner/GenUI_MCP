@@ -2,19 +2,19 @@
 
 ## 1. Goal
 
-Build a standalone **MCP Apps**-capable MCP server that exposes a single tool. The tool accepts a natural-language description of a UI component, drives the existing [OpenGenerativeUI](../OpenGenerativeUI/README.md) agent at `http://localhost:8123` to produce an HTML/JS visualization, and returns that HTML as an interactive MCP Apps **View** that any compliant host (Claude Desktop, Claude Code, basic-host) can render.
+Build a standalone **MCP Apps**-capable MCP server that exposes a single tool. The tool accepts a natural-language description of a UI component, drives the existing [OpenGenerativeUI](https://github.com/CopilotKit/OpenGenerativeUI) agent at `http://localhost:8123` to produce an HTML/JS visualization, and returns that HTML as an interactive MCP Apps **View** that any compliant host (Claude Desktop, Claude Code, basic-host) can render.
 
 Reference docs:
 
 - [MCP Apps overview](https://modelcontextprotocol.io/extensions/apps/overview)
 - [MCP Apps SDK source](https://github.com/modelcontextprotocol/ext-apps) — `@modelcontextprotocol/ext-apps`
-- OpenGenerativeUI agent: `C:\Sandboxes\OpenGenUI\OpenGenerativeUI\apps\agent\main.py`
-- Existing reference MCP server (skill resources, `assemble_document` tool — but NO MCP Apps UI): `C:\Sandboxes\OpenGenUI\OpenGenerativeUI\apps\mcp\`
+- OpenGenerativeUI agent: [`apps/agent/main.py`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/agent/main.py)
+- Existing reference MCP server (skill resources, `assemble_document` tool — but NO MCP Apps UI): [`apps/mcp/`](https://github.com/CopilotKit/OpenGenerativeUI/tree/main/apps/mcp)
 
 ## 2. Non-goals
 
 - We are **not** re-implementing the visualization logic. The agent does the heavy lifting.
-- We are **not** modifying the OpenGenerativeUI repo. This is a separate project at `C:\Sandboxes\OpenGenUI\OpenGenUIMCP\`.
+- We are **not** modifying the OpenGenerativeUI repo. This is a separate project.
 - We are **not** building a chat UI. The MCP App is a one-shot renderer: prompt in → component out.
 - No auth. No persistence. No multi-tenancy.
 
@@ -75,7 +75,7 @@ MCP Apps separates the **UI template** (static, served as a resource via `ui://`
 - The View registers an `ontoolresult` handler. When the host delivers the tool result, the View reads `structuredContent.html` (the agent's HTML pre-wrapped with the design system) and injects it into a **nested sandboxed `<iframe srcdoc="…">`**.
 - The nested iframe isolates the agent's scripts (CSP, ES module import map, three.js, gsap, etc.) from the View's own bundle and the host page.
 
-Rationale for the nested iframe: the agent's output uses `<script type="module">` with bare-specifier imports resolved via an import map (`three`, `gsap`, `d3`, `chart.js/auto`), inline scripts, and a specific CSP. Trying to inject that into the View's main document fights with the View's own CSP and module graph. Using `srcdoc` gives the agent output a clean, self-contained execution context — and exactly mirrors the proven `widgetRenderer` design in `apps/app/src/components/generative-ui/widget-renderer.tsx`.
+Rationale for the nested iframe: the agent's output uses `<script type="module">` with bare-specifier imports resolved via an import map (`three`, `gsap`, `d3`, `chart.js/auto`), inline scripts, and a specific CSP. Trying to inject that into the View's main document fights with the View's own CSP and module graph. Using `srcdoc` gives the agent output a clean, self-contained execution context — and exactly mirrors the proven `widgetRenderer` design in [`apps/app/src/components/generative-ui/widget-renderer.tsx`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/app/src/components/generative-ui/widget-renderer.tsx).
 
 ### 3.2 Tool/Resource linkage
 
@@ -117,7 +117,7 @@ The tool returns *both* a text fallback (for non-UI hosts) and structured conten
 }
 ```
 
-`structuredContent.html` is the **fully-assembled HTML document** (DOCTYPE, theme CSS, SVG color classes, form styles, bridge JS, agent's HTML fragment in `#content`) produced by reusing the `assembleDocument()` logic from `OpenGenerativeUI/apps/mcp/src/renderer.ts`. We **fork** that file into this project rather than depend on it — see §6.4.
+`structuredContent.html` is the **fully-assembled HTML document** (DOCTYPE, theme CSS, SVG color classes, form styles, bridge JS, agent's HTML fragment in `#content`) produced by reusing the `assembleDocument()` logic from [`apps/mcp/src/renderer.ts`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/mcp/src/renderer.ts) in the OpenGenerativeUI repo. We **fork** that file into this project rather than depend on it — see §6.4.
 
 **Error modes** (all return `isError: true` and a text-only `content` so the model can recover):
 
@@ -208,7 +208,7 @@ The View renders three states: **loading** (spinner with cycling loading phrases
 
 ### 5.1 Protocol — AG-UI
 
-The agent (`OpenGenerativeUI/apps/agent/main.py`) is mounted via `ag_ui_langgraph.add_langgraph_fastapi_endpoint(..., path="/")` with a `LangGraphAGUIAgent` wrapper. That mounts a **standard AG-UI HTTP endpoint** at `http://localhost:8123/`. The right client is therefore the official AG-UI JS SDK:
+The agent ([`apps/agent/main.py`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/agent/main.py) in OpenGenerativeUI) is mounted via `ag_ui_langgraph.add_langgraph_fastapi_endpoint(..., path="/")` with a `LangGraphAGUIAgent` wrapper. That mounts a **standard AG-UI HTTP endpoint** at `http://localhost:8123/`. The right client is therefore the official AG-UI JS SDK:
 
 - **`@ag-ui/client`** — provides `HttpAgent`, a ready-to-use HTTP+SSE client that consumes the AG-UI wire format and emits typed events (`TextMessageStart`/`Content`/`End`, `ToolCallStart`/`Args`/`End`, lifecycle events, state events).
 - **`@ag-ui/core`** — type definitions (`RunAgentInput`, `Message`, event types).
@@ -262,9 +262,11 @@ The fix is to **advertise `widgetRenderer` ourselves** via AG-UI's `tools` param
 
 ```ts
 // Tool name, description, and parameter descriptions are copied verbatim from
-// OpenGenerativeUI/apps/app/src/hooks/use-generative-ui-examples.tsx
-// and apps/app/src/components/generative-ui/widget-renderer.tsx so the agent
-// gets the same framing as in the production frontend.
+// CopilotKit/OpenGenerativeUI's apps/app/src/hooks/use-generative-ui-examples.tsx
+// and apps/app/src/components/generative-ui/widget-renderer.tsx — see GitHub:
+// https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/app/src/hooks/use-generative-ui-examples.tsx
+// https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/app/src/components/generative-ui/widget-renderer.tsx
+// — so the agent gets the same framing as in the production frontend.
 const WIDGET_RENDERER_TOOL = {
   name: "widgetRenderer",
   description:
@@ -422,7 +424,7 @@ Match the OpenGenerativeUI MCP server: dual transport from a single `main.ts`.
 
 ### 6.4 Sharing `assembleDocument` with OpenGenerativeUI
 
-The agent's HTML output requires the design-system shell (theme CSS variables, SVG color classes, form styles, bridge JS) that `OpenGenerativeUI/apps/mcp/src/renderer.ts` already produces. We have three options:
+The agent's HTML output requires the design-system shell (theme CSS variables, SVG color classes, form styles, bridge JS) that [`apps/mcp/src/renderer.ts`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/mcp/src/renderer.ts) in OpenGenerativeUI already produces. We have three options:
 
 | Option | Trade-off |
 | --- | --- |
@@ -452,7 +454,7 @@ Locked in as **A** (see §9.4): copy `renderer.ts` into `src/assemble-document.t
 
 ## 8. Testing strategy
 
-- **Local smoke test**: run the OpenGenerativeUI agent (`make dev-agent` in `OpenGenerativeUI/`), run the MCP server, and use `basic-host` (cloned from `https://github.com/modelcontextprotocol/ext-apps`, then `cd examples/basic-host`) to call the tool with representative descriptions ("an interactive binary search visualization", "a 3D rotating cube using Three.js", "an SVG diagram of TCP handshake"). Clone destination is left to the developer (Windows-friendly path, e.g., `C:\Sandboxes\ext-apps`).
+- **Local smoke test**: run the OpenGenerativeUI agent (`make dev-agent` from a clone of [CopilotKit/OpenGenerativeUI](https://github.com/CopilotKit/OpenGenerativeUI)), run this MCP server, and use `basic-host` (cloned from [modelcontextprotocol/ext-apps](https://github.com/modelcontextprotocol/ext-apps), then `cd examples/basic-host`) to call the tool with representative descriptions ("an interactive binary search visualization", "a 3D rotating cube using Three.js", "an SVG diagram of TCP handshake").
 - **Manual coverage**: verify each error mode from §4.1 (kill the agent → "not reachable"; send a description that triggers a text-only response → "no UI produced"; send a "pie chart of X" → confirm explicit pieChart error from §9.3).
 - **No unit test framework** matches the rest of the OpenGenUI repo. Skip for now.
 
@@ -499,7 +501,7 @@ Decision: skip for v1. The View is a passive renderer: loading state → result 
 
 ### 9.7 widgetRenderer advertised as a client-side AG-UI tool — RESOLVED
 
-Decision: pass `tools: [WIDGET_RENDERER_TOOL]` to `runAgent`, with the tool's `name`, `description`, and parameter descriptions copied verbatim from CopilotKit's `useComponent` registration in `apps/app/src/hooks/use-generative-ui-examples.tsx` and `widget-renderer.tsx`.
+Decision: pass `tools: [WIDGET_RENDERER_TOOL]` to `runAgent`, with the tool's `name`, `description`, and parameter descriptions copied verbatim from CopilotKit's `useComponent` registration in [`apps/app/src/hooks/use-generative-ui-examples.tsx`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/app/src/hooks/use-generative-ui-examples.tsx) and [`apps/app/src/components/generative-ui/widget-renderer.tsx`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/app/src/components/generative-ui/widget-renderer.tsx).
 
 Rationale: this replicates what CopilotKit's middleware does for the Next.js frontend. Without it the agent doesn't see `widgetRenderer` in its tool list, refuses ("I can't use widgetRenderer here") or falls back to inline-JSON/fenced-block/JSX-tag workarounds in assistant text. With it, the agent emits clean `TOOL_CALL_START/ARGS/END` events for `widgetRenderer` with parsed args — exactly what we want. The legacy text-fallback scanners (§5.2.3) are retained as defense-in-depth but expected to be dead code in normal operation.
 
