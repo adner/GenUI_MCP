@@ -2,7 +2,7 @@
 
 ## 1. Goal
 
-Build a standalone **MCP Apps**-capable MCP server that exposes a single tool. The tool accepts a natural-language description of a UI component, drives the existing [OpenGenerativeUI](https://github.com/CopilotKit/OpenGenerativeUI) agent at `http://localhost:8123` to produce an HTML/JS visualization, and returns that HTML as an interactive MCP Apps **View** that any compliant host (Claude Desktop, Claude Code, basic-host) can render.
+Build a standalone **MCP Apps**-capable MCP server that exposes a single tool. The tool accepts a natural-language description of a UI component, drives the existing [OpenGenerativeUI](https://github.com/CopilotKit/OpenGenerativeUI) agent at `http://localhost:8123` to produce an HTML/JS visualization, and returns that HTML as an interactive MCP Apps **View** that any compliant host ([Microsoft 365 Copilot declarative agents](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent), Claude Desktop, Claude Code, basic-host) can render.
 
 Reference docs:
 
@@ -22,7 +22,7 @@ Reference docs:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ MCP Host (Claude Desktop / Claude Code / basic-host)                 │
+│ MCP Host (M365 Copilot / Claude Desktop / Claude Code / basic-host)  │
 │                                                                      │
 │  1. tools/call("generate_ui_component", {description})               │
 │  2. resources/read("ui://opengen/viewer.html")  → static HTML        │
