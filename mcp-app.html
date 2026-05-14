@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenGenUI Viewer</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fg: #1a1a1a;
+        --muted: #73726c;
+        --border: rgba(0, 0, 0, 0.15);
+        --accent: #185fa5;
+        --danger-bg: #fcebeb;
+        --danger-fg: #a32d2d;
+        --danger-border: #a32d2d;
+        --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      }
+      [data-theme="dark"]:root {
+        --bg: #1a1a18;
+        --fg: #e8e6de;
+        --muted: #9c9a92;
+        --border: rgba(255, 255, 255, 0.15);
+        --accent: #85b7eb;
+        --danger-bg: #501313;
+        --danger-fg: #f09595;
+        --danger-border: #f09595;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; padding: 0; background: transparent; color: var(--fg); font-family: var(--font-sans); }
+      #root { padding: 0; }
+
+      .state-loading, .state-error {
+        padding: 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        line-height: 1.5;
+      }
+      .state-loading {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        border: 0.5px dashed var(--border);
+      }
+      .spinner {
+        width: 14px; height: 14px;
+        border-radius: 50%;
+        border: 2px solid var(--border);
+        border-top-color: var(--accent);
+        animation: spin 0.8s linear infinite;
+        flex-shrink: 0;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .state-error {
+        background: var(--danger-bg);
+        color: var(--danger-fg);
+        border: 0.5px solid var(--danger-border);
+      }
+      .state-error strong { display: block; margin-bottom: 4px; }
+
+      iframe.widget-frame {
+        display: block;
+        width: 100%;
+        border: 0;
+        background: transparent;
+        transition: height 200ms ease-out;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .spinner { animation: none; }
+        iframe.widget-frame { transition: none; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/mcp-app.ts"></script>
+  </body>
+</html>

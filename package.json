@@ -1,0 +1,37 @@
+{
+  "name": "opengen-ui-mcp",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "probe": "tsx probe.ts",
+    "build:view": "vite build",
+    "build": "npm run build:view",
+    "typecheck:view": "tsc --noEmit -p tsconfig.json",
+    "typecheck:server": "tsc --noEmit -p tsconfig.server.json",
+    "typecheck": "npm run typecheck:server && npm run typecheck:view",
+    "serve": "tsx main.ts",
+    "serve:stdio": "tsx main.ts --stdio",
+    "dev": "cross-env NODE_ENV=development concurrently -k -n view,server -c blue,green \"vite build --watch\" \"tsx --watch main.ts\""
+  },
+  "dependencies": {
+    "@ag-ui/client": "^0.0.53",
+    "@ag-ui/core": "^0.0.53",
+    "@modelcontextprotocol/ext-apps": "^1.7.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.7.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.12",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}
