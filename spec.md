@@ -8,6 +8,8 @@ Reference docs:
 
 - [MCP Apps overview](https://modelcontextprotocol.io/extensions/apps/overview)
 - [MCP Apps SDK source](https://github.com/modelcontextprotocol/ext-apps) — `@modelcontextprotocol/ext-apps`
+- [Microsoft 365 Copilot declarative agents — overview](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent) — the host used in the demo
+- [Build agents with MCP](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/build-mcp-plugins) — how to wire an MCP server (this project) into a Microsoft 365 Copilot declarative agent
 - OpenGenerativeUI agent: [`apps/agent/main.py`](https://github.com/CopilotKit/OpenGenerativeUI/blob/main/apps/agent/main.py)
 - Existing reference MCP server (skill resources, `assemble_document` tool — but NO MCP Apps UI): [`apps/mcp/`](https://github.com/CopilotKit/OpenGenerativeUI/tree/main/apps/mcp)
 

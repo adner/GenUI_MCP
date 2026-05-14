@@ -39,7 +39,13 @@ npm run serve:stdio   # stdio transport for Claude Desktop
 
 ## Connecting from an MCP host
 
-Add the HTTP endpoint to the host's MCP server config. For VS Code's `mcp.json`:
+### Microsoft 365 Copilot declarative agents
+
+Follow Microsoft's [Build agents with MCP](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/build-mcp-plugins) guide and point the declarative agent at `http://localhost:3101/mcp` (or wherever this server is reachable). This is the host the demo was built on — see the [LinkedIn post](https://www.linkedin.com/posts/andreasadner_microsoftcopilot-agui-copilotkit-ugcPost-7460401668283854850-wqmW).
+
+### VS Code
+
+Add the HTTP endpoint to `mcp.json`:
 
 ```json
 {
@@ -49,7 +55,9 @@ Add the HTTP endpoint to the host's MCP server config. For VS Code's `mcp.json`:
 }
 ```
 
-Then ask the model to "show me a rotating triangle" / "an interactive binary search visualization" / etc.
+### Then
+
+Ask the model to "show me a rotating triangle" / "an interactive binary search visualization" / etc.
 
 ## Logs
 
