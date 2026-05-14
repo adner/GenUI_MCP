@@ -4,6 +4,16 @@ An **MCP Apps**-capable MCP server that turns a natural-language description int
 
 The server exposes a single tool — `generate_ui_component(description)` — that drives the [OpenGenerativeUI](https://github.com/CopilotKit/OpenGenerativeUI) LangGraph deep agent over the [AG-UI](https://docs.ag-ui.com) protocol, captures the agent's `widgetRenderer` tool call, and serves the result as a sandboxed MCP App view.
 
+> [!WARNING]
+> **This is a tech demo, not an enterprise-ready product.** It deliberately ships with:
+>
+> - **Maximally permissive CSP** in the rendered iframe (`'unsafe-inline'`, `'unsafe-eval'`, several CDN domains) so the agent's arbitrary HTML/JS executes without friction.
+> - **No authentication** on the HTTP transport — open to anything that can reach `localhost:3101`.
+> - **No rate limiting, no input validation, no audit trail** beyond per-call debug logs.
+> - **Execution of unaudited LLM-generated JavaScript** in the user's host (sandboxed in an iframe, but still arbitrary code).
+>
+> Do not deploy this as-is anywhere reachable from a network you don't control. Hardening for production would need (at minimum) authentication, a narrow CSP scoped to specific CDNs with `'unsafe-eval'` dropped, supply-chain review, and a careful look at how agent output flows into the host.
+
 See [`spec.md`](./spec.md) for the full design, decisions log, and architecture diagram.
 
 ## Prerequisites

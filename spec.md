@@ -15,10 +15,14 @@ Reference docs:
 
 ## 2. Non-goals
 
+**Status**: this is a tech demo, not an enterprise-ready product. The trade-offs below — permissive CSP, open HTTP, no auth, execution of unaudited LLM-generated JS — are deliberate for simplicity and rapid iteration, and would all need to be revisited before any production / enterprise deployment. Concretely:
+
 - We are **not** re-implementing the visualization logic. The agent does the heavy lifting.
 - We are **not** modifying the OpenGenerativeUI repo. This is a separate project.
 - We are **not** building a chat UI. The MCP App is a one-shot renderer: prompt in → component out.
-- No auth. No persistence. No multi-tenancy.
+- **No auth, no rate limiting, no input validation.** The HTTP transport is open to anything that can reach `localhost:3101`. The single tool input is a free-form string passed straight to the agent.
+- **No persistence, no multi-tenancy.** Each tool call runs in a fresh AG-UI thread.
+- **Maximally permissive CSP.** Both the server-declared `_meta.ui.csp` (§4.2) and the inner `srcdoc` `<meta>` CSP allow `'unsafe-inline'`, `'unsafe-eval'`, and several CDN domains so the agent's output executes without friction. See §9.2 for the production-tightening checklist.
 
 ## 3. Architecture
 
