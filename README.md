@@ -1,6 +1,6 @@
 # OpenGenUI MCP
 
-An **MCP Apps**-capable MCP server that turns a natural-language description into an interactive HTML/JS UI component, rendered in any compliant MCP host ([Microsoft 365 Copilot declarative agents](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent), Claude Desktop, VS Code, basic-host).
+An **MCP Apps**-capable MCP server that turns a natural-language description into an interactive HTML/JS UI component, rendered in any compliant MCP host ([Microsoft 365 Copilot declarative agents](https://learn.microsoft.com/en-us/microsoft-365/copilot/extensibility/overview-declarative-agent), Claude Desktop, VS Code, [Copilot Cowork](https://learn.microsoft.com/en-us/microsoft-365/copilot/cowork/mcp-apps-support)).
 
 The server exposes a single tool — `generate_ui_component(description)` — that drives the [OpenGenerativeUI](https://github.com/CopilotKit/OpenGenerativeUI) LangGraph deep agent over the [AG-UI](https://docs.ag-ui.com) protocol, captures the agent's `widgetRenderer` tool call, and serves the result as a sandboxed MCP App view.
 
